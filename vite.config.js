@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => ({
   },
   resolve: {
     alias: {
-      "@iid/common": path.resolve(__dirname, "../../_common"),
+      "@iid/common": path.resolve(__dirname, "_common"),
     },
   },
 }));
