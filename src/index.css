@@ -1,0 +1,169 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0b0b0f;
+  --bg2: #12121a;
+  --bg3: #1a1a2e;
+  --fg: #e0e0e8;
+  --fg2: #94a3b8;
+  --accent: #6366f1;
+  --brand-cyan: #00f5ff;
+  --brand-blue: #2932ff;
+  --brand-purple: #a838ff;
+  --brand-green: #00ffb2;
+  --brand-gold: #ffb03a;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Brand lockup typography */
+.brand-wordmark {
+  font-family: "Share Tech Mono", monospace;
+  text-transform: lowercase;
+}
+.brand-tm {
+  font-family: "Outfit", sans-serif;
+  font-weight: 600;
+  font-size: 0.6em;
+  vertical-align: super;
+}
+.brand-sub {
+  font-family: "Outfit", sans-serif;
+  font-weight: 300;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.glass-panel {
+  background: rgba(18, 18, 26, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+}
+
+.stat-glow {
+  text-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
+}
+
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    var(--brand-cyan) 0%,
+    var(--brand-blue) 50%,
+    var(--brand-purple) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.gradient-text-warm {
+  background: linear-gradient(
+    135deg,
+    var(--brand-blue) 0%,
+    var(--brand-purple) 50%,
+    var(--brand-gold) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.brand-gradient-bg {
+  background: linear-gradient(135deg, var(--brand-blue), var(--brand-purple));
+}
+
+.brand-glow {
+  box-shadow:
+    0 0 20px rgba(41, 50, 255, 0.3),
+    0 0 40px rgba(168, 56, 255, 0.15);
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 0.4s ease-out forwards;
+}
+
+@keyframes pulse-glow {
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.treemap-tooltip {
+  position: fixed;
+  pointer-events: none;
+  z-index: 50;
+  max-width: 360px;
+  transition:
+    opacity 0.15s,
+    transform 0.15s;
+}
+
+/* Active nav link */
+.nav-link-active {
+  background: linear-gradient(
+    135deg,
+    rgba(41, 50, 255, 0.15),
+    rgba(168, 56, 255, 0.15)
+  );
+  border-color: rgba(168, 56, 255, 0.3);
+  color: var(--brand-cyan);
+}
+
+/* Responsive sidebar collapse */
+@media (max-width: 768px) {
+  .sidebar-desktop {
+    display: none;
+  }
+}

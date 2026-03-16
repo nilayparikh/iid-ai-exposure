@@ -1,0 +1,191 @@
+syntax = "proto3";
+
+// Reusable building blocks
+message YearValue {
+  string year = 1;
+  float value = 2;
+}
+
+message NamedSeries {
+  string name = 1;
+  repeated YearValue data = 2;
+}
+
+message GenderSeries {
+  repeated YearValue male = 1;
+  repeated YearValue female = 2;
+  repeated YearValue person = 3;
+}
+
+// ─── Sidebar / Summary ───────────────────────────────────────────
+message Summary {
+  float total_workers_millions = 1;
+  float weighted_avg_exposure = 2;
+  float high_exposure_workers_millions = 3;
+  int32 num_industries = 4;
+  int32 num_occupations = 5;
+  float latest_lfpr = 6;
+  float latest_ur = 7;
+  float latest_regular_wage = 8;
+  string data_source = 9;
+  string data_year = 10;
+  repeated string data_years = 11;
+}
+
+message Signal {
+  string label = 1;
+  int32 weight = 2;
+  string description = 3;
+}
+
+message TierDefinition {
+  string range = 1;
+  string label = 2;
+  string description = 3;
+}
+
+message Assessment {
+  string basis = 1;
+  string description = 2;
+  repeated Signal signals = 3;
+  repeated TierDefinition tier_definitions = 4;
+  string coverage_note = 5;
+}
+
+// ─── Treemap / Industries / Occupations ──────────────────────────
+message Industry {
+  string code = 1;
+  string name = 2;
+  int32 section_code = 3;
+  string sector = 4;
+  float worker_pct = 5;
+  float workers_millions = 6;
+  float ai_exposure = 7;
+  string ai_rationale = 8;
+  repeated YearValue trend = 9;
+}
+
+message Occupation {
+  string code = 1;
+  string name = 2;
+  int32 division_code = 3;
+  float worker_pct = 4;
+  float workers_millions = 5;
+  float ai_exposure = 6;
+  string ai_rationale = 7;
+  repeated YearValue trend = 8;
+}
+
+// ─── Treemap page bundle ─────────────────────────────────────────
+message TreemapPage {
+  Summary summary = 1;
+  Assessment assessment = 2;
+  repeated Industry industries = 3;
+  repeated Occupation occupations = 4;
+}
+
+// ─── Trends page ─────────────────────────────────────────────────
+message IndicatorTrend {
+  string name = 1;
+  string unit = 2;
+  repeated YearValue data = 3;
+}
+
+message GenderTrends {
+  GenderSeries lfpr = 1;
+  GenderSeries wpr = 2;
+  GenderSeries ur = 3;
+}
+
+message TrendsPage {
+  IndicatorTrend lfpr = 1;
+  IndicatorTrend wpr = 2;
+  IndicatorTrend ur = 3;
+  GenderTrends gender_trends = 4;
+  repeated NamedSeries broad_sectors = 5;
+  repeated NamedSeries employment_status = 6;
+}
+
+// ─── Demographics page ───────────────────────────────────────────
+message EducationBreakdown {
+  repeated NamedSeries lfpr = 1;
+  repeated NamedSeries wpr = 2;
+  repeated NamedSeries ur = 3;
+}
+
+message SectorBreakdown {
+  string sector = 1;
+  GenderSeries data = 2;
+}
+
+message AgeBreakdown {
+  string age_group = 1;
+  GenderSeries data = 2;
+}
+
+message DemographicsPage {
+  EducationBreakdown education_breakdown = 1;
+  repeated SectorBreakdown sector_breakdown = 2;
+  repeated AgeBreakdown age_breakdown = 3;
+  repeated NamedSeries social_category = 4;
+  repeated NamedSeries religion = 5;
+}
+
+// ─── States page ─────────────────────────────────────────────────
+message GenderValues {
+  map<string, float> values = 1;
+}
+
+message State {
+  string name = 1;
+  float lfpr_latest = 2;
+  float wpr_latest = 3;
+  float ur_latest = 4;
+  repeated YearValue lfpr_trend = 5;
+  repeated YearValue wpr_trend = 6;
+  repeated YearValue ur_trend = 7;
+  GenderValues lfpr_by_gender = 8;
+}
+
+message StatesPage {
+  repeated State states = 1;
+}
+
+// ─── Employment page ─────────────────────────────────────────────
+message EmploymentPage {
+  repeated Industry industries = 1;
+  repeated Occupation occupations = 2;
+  repeated NamedSeries employment_conditions = 3;
+  repeated NamedSeries broad_sectors = 4;
+  Summary summary = 5;
+}
+
+// ─── Wages page ──────────────────────────────────────────────────
+message WageType {
+  string label = 1;
+  GenderSeries by_gender = 2;
+  float latest_male = 3;
+  float latest_female = 4;
+  float latest_person = 5;
+}
+
+message StateWage {
+  string name = 1;
+  float value = 2;
+}
+
+message WagesPage {
+  WageType regular_monthly = 1;
+  WageType casual_daily = 2;
+  WageType self_employment_monthly = 3;
+  repeated StateWage state_regular_wages = 4;
+  string data_year = 5;
+}
+
+// ─── Assessment page ─────────────────────────────────────────────
+message AssessmentPage {
+  Assessment assessment = 1;
+  Summary summary = 2;
+  repeated Industry industries = 3;
+  repeated Occupation occupations = 4;
+}

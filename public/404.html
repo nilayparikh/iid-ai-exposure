@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <script>
+    // GitHub Pages SPA redirect for BrowserRouter.
+    // Stores the real path in sessionStorage and redirects to index.html,
+    // which picks it up and replaces the URL via History API.
+    var base = '/iid-ai-exposure';
+    var path = window.location.pathname.replace(base, '');
+    var search = window.location.search;
+    if (path && path !== '/' && path !== '/index.html') {
+      sessionStorage.setItem('spa-redirect', path + search);
+    }
+    window.location.replace(base + '/');
+  </script>
+</head>
+
+<body></body>
+
+</html>

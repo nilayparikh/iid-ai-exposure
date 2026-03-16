@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Exposure of India's Job Market | LocalM™ IiD</title>
+  <meta name="description"
+    content="Interactive dashboard exploring how AI affects India's 564M-strong workforce across 20 industries and 9 occupation groups. Data from PLFS 2023-24." />
+
+  <!-- Brand icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/brand/favicon-full-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/brand/icon-mark-gradient-180.png" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <meta name="theme-color" content="#0B0B0F" />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="AI Exposure of India's Job Market | LocalM™ IiD" />
+  <meta property="og:description"
+    content="Interactive dashboard exploring how AI affects India's 564M-strong workforce across 20 industries and 9 occupation groups." />
+  <meta property="og:image" content="/brand/og-image-template-1200x630.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <!-- Fonts: Inter (UI), Share Tech Mono (brand wordmark), Outfit (brand supporting) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Share+Tech+Mono&family=Outfit:wght@300;400;600;700&display=swap"
+    rel="stylesheet" />
+
+  <!-- SPA redirect pickup for GitHub Pages (works with BrowserRouter) -->
+  <script>
+    (function () {
+      var redirect = sessionStorage.getItem('spa-redirect');
+      if (redirect) {
+        sessionStorage.removeItem('spa-redirect');
+        window.history.replaceState(null, '', '/iid-ai-exposure' + redirect);
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
+</html>
