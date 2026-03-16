@@ -719,6 +719,20 @@ function IndustryScatter({ industries, selectedIndustry, onSelect }) {
                 strokeWidth={selected ? 2 : isHovered ? 1.5 : 0.5}
                 style={{ transition: "r 0.15s, fill 0.15s" }}
               />
+              {/* Industry code label on bubble */}
+              <text
+                x={cx}
+                y={cy}
+                textAnchor="middle"
+                dominantBaseline="central"
+                fill={isHovered || selected ? "#fff" : "rgba(255,255,255,0.7)"}
+                fontSize={r > 8 ? "9" : "7"}
+                fontWeight="700"
+                fontFamily="Inter, system-ui, sans-serif"
+                style={{ pointerEvents: "none" }}
+              >
+                {ind.code}
+              </text>
             </g>
           );
         })}

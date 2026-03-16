@@ -16,6 +16,12 @@
   --brand-gold: #ffb03a;
 }
 
+html {
+  font-size: clamp(15px, 0.18vw + 14.5px, 18px);
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -25,6 +31,8 @@
 body {
   background: var(--bg);
   color: var(--fg);
+  font-size: 1rem;
+  line-height: 1.45;
   font-family:
     "Inter",
     -apple-system,
@@ -32,6 +40,7 @@ body {
     system-ui,
     sans-serif;
   -webkit-font-smoothing: antialiased;
+  min-height: 100dvh;
 }
 
 ::-webkit-scrollbar {
@@ -70,7 +79,7 @@ body {
   background: rgba(18, 18, 26, 0.8);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 12px;
+  border-radius: 0.85rem;
 }
 
 .stat-glow {
@@ -159,6 +168,11 @@ body {
   );
   border-color: rgba(168, 56, 255, 0.3);
   color: var(--brand-cyan);
+}
+
+svg,
+canvas {
+  max-width: 100%;
 }
 
 /* Responsive sidebar collapse */

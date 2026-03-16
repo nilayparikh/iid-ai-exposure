@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from "react";
+import { useState } from "react";
 
 const INDICATOR_META = {
   lfpr: {
@@ -223,115 +223,49 @@ export default function TrendPanel({ data }) {
 }
 
 export function MiniChart({ label, data, color, unit }) {
-  const canvasRef = useRef(null);
   const [hover, setHover] = useState(null);
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || !data?.length) return;
-    const dpr = window.devicePixelRatio || 1;
-    const w = canvas.clientWidth;
-    const h = 140;
-    canvas.width = w * dpr;
-    canvas.height = h * dpr;
-    canvas.style.height = h + "px";
+  if (!data?.length) return null;
+  const validPts = data.filter((p) => p.value != null);
+  if (!validPts.length) return null;
 
-    const ctx = canvas.getContext("2d");
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    ctx.clearRect(0, 0, w, h);
+  const values = validPts.map((p) => p.value);
+  const min = Math.min(...values) * 0.92;
+  const max = Math.max(...values) * 1.08;
+  const range = max - min || 1;
+  const latest = validPts[validPts.length - 1];
 
-    const values = data.map((p) => p.value).filter((v) => v != null);
-    if (!values.length) return;
-    const min = Math.min(...values) * 0.92;
-    const max = Math.max(...values) * 1.08;
-    const range = max - min || 1;
+  const width = 320;
+  const height = 140;
+  const padLeft = 42;
+  const padRight = 10;
+  const padTop = 8;
+  const padBottom = 24;
+  const chartW = width - padLeft - padRight;
+  const chartH = height - padTop - padBottom;
 
-    const padLeft = 42,
-      padRight = 10,
-      padTop = 8,
-      padBottom = 24;
-    const chartW = w - padLeft - padRight;
-    const chartH = h - padTop - padBottom;
+  const getX = (i) => padLeft + (i / Math.max(validPts.length - 1, 1)) * chartW;
+  const getY = (v) => padTop + ((max - v) / range) * chartH;
 
-    // Grid
-    ctx.strokeStyle = "rgba(255,255,255,0.04)";
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 3; i++) {
-      const y = padTop + (chartH / 3) * i;
-      ctx.beginPath();
-      ctx.moveTo(padLeft, y);
-      ctx.lineTo(w - padRight, y);
-      ctx.stroke();
-      ctx.fillStyle = "#555";
-      ctx.font = "9px Inter, system-ui";
-      ctx.textAlign = "right";
-      ctx.textBaseline = "middle";
-      const val = max - (range / 3) * i;
-      ctx.fillText(val.toFixed(val >= 100 ? 0 : 1), padLeft - 4, y);
-    }
+  const linePath = validPts
+    .map((p, i) => `${i === 0 ? "M" : "L"}${getX(i)},${getY(p.value)}`)
+    .join(" ");
+  const areaPath = `${linePath} L${getX(validPts.length - 1)},${padTop + chartH} L${getX(0)},${padTop + chartH} Z`;
 
-    // Area
-    const validPts = data.filter((p) => p.value != null);
-    ctx.beginPath();
-    validPts.forEach((p, i) => {
-      const x = padLeft + (i / Math.max(validPts.length - 1, 1)) * chartW;
-      const y = padTop + ((max - p.value) / range) * chartH;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.lineTo(padLeft + chartW, padTop + chartH);
-    ctx.lineTo(padLeft, padTop + chartH);
-    ctx.closePath();
-    const grad = ctx.createLinearGradient(0, padTop, 0, padTop + chartH);
-    grad.addColorStop(0, color + "25");
-    grad.addColorStop(1, color + "05");
-    ctx.fillStyle = grad;
-    ctx.fill();
-
-    // Line
-    ctx.beginPath();
-    validPts.forEach((p, i) => {
-      const x = padLeft + (i / Math.max(validPts.length - 1, 1)) * chartW;
-      const y = padTop + ((max - p.value) / range) * chartH;
-      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-    });
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    // Dots + year labels
-    validPts.forEach((p, i) => {
-      const x = padLeft + (i / Math.max(validPts.length - 1, 1)) * chartW;
-      const y = padTop + ((max - p.value) / range) * chartH;
-      ctx.beginPath();
-      ctx.arc(x, y, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-      ctx.fillStyle = "#666";
-      ctx.font = "8px Inter, system-ui";
-      ctx.textAlign = "center";
-      ctx.fillText(p.year?.replace("20", "'") || "", x, h - 6);
-    });
-  }, [data, color]);
+  const gridLines = Array.from({ length: 4 }, (_, i) => {
+    const val = max - (range / 3) * i;
+    const y = padTop + (chartH / 3) * i;
+    return { y, label: val >= 100 ? val.toFixed(0) : val.toFixed(1) };
+  });
 
   const handleMouseMove = (e) => {
-    const canvas = canvasRef.current;
-    if (!canvas || !data?.length) return;
-    const rect = canvas.getBoundingClientRect();
-    const mx = e.clientX - rect.left;
-    const w = canvas.clientWidth;
-    const padLeft = 42,
-      padRight = 10;
-    const chartW = w - padLeft - padRight;
-    const validPts = data.filter((p) => p.value != null);
-    if (!validPts.length) return;
+    const svg = e.currentTarget;
+    const rect = svg.getBoundingClientRect();
+    const mx = ((e.clientX - rect.left) / rect.width) * width;
     const idx = Math.round(((mx - padLeft) / chartW) * (validPts.length - 1));
     const clamped = Math.max(0, Math.min(validPts.length - 1, idx));
-    const pt = validPts[clamped];
-    const x = padLeft + (clamped / Math.max(validPts.length - 1, 1)) * chartW;
-    setHover({ x, pt });
+    setHover(clamped);
   };
-
-  const latest = data?.filter((d) => d.value != null).slice(-1)[0];
 
   return (
     <div className="glass-panel p-3">
@@ -346,32 +280,112 @@ export function MiniChart({ label, data, color, unit }) {
           </span>
         )}
       </div>
-      <div className="relative">
-        <canvas
-          ref={canvasRef}
-          className="w-full"
-          onMouseMove={handleMouseMove}
-          onMouseLeave={() => setHover(null)}
-        />
-        {hover && (
-          <div
-            className="absolute top-0 pointer-events-none z-10"
-            style={{ left: hover.x }}
-          >
-            <div
-              className="w-px h-full bg-white/20 absolute left-0 top-0"
-              style={{ height: 116 }}
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        className="w-full"
+        style={{ height: 140 }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={() => setHover(null)}
+      >
+        <defs>
+          <linearGradient id={`grad-${label}`} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color} stopOpacity="0.15" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.02" />
+          </linearGradient>
+        </defs>
+
+        {/* Grid lines + labels */}
+        {gridLines.map((g) => (
+          <g key={g.y}>
+            <line
+              x1={padLeft}
+              y1={g.y}
+              x2={width - padRight}
+              y2={g.y}
+              stroke="rgba(255,255,255,0.04)"
             />
-            <div className="absolute -top-1 -translate-x-1/2 glass-panel px-2 py-1 text-[10px] text-gray-300 whitespace-nowrap">
-              <span className="font-semibold" style={{ color }}>
-                {hover.pt.value}
-                {unit}
-              </span>
-              <span className="text-gray-500 ml-1">{hover.pt.year}</span>
-            </div>
-          </div>
+            <text
+              x={padLeft - 4}
+              y={g.y}
+              textAnchor="end"
+              dominantBaseline="middle"
+              fill="#555"
+              fontSize="9"
+              fontFamily="Inter, system-ui, sans-serif"
+            >
+              {g.label}
+            </text>
+          </g>
+        ))}
+
+        {/* Area */}
+        <path d={areaPath} fill={`url(#grad-${label})`} />
+
+        {/* Line */}
+        <path d={linePath} fill="none" stroke={color} strokeWidth="2" />
+
+        {/* Dots + year labels */}
+        {validPts.map((p, i) => (
+          <g key={i}>
+            <circle
+              cx={getX(i)}
+              cy={getY(p.value)}
+              r={hover === i ? 4.5 : 2.5}
+              fill={hover === i ? "#fff" : color}
+              stroke={hover === i ? color : "none"}
+              strokeWidth={hover === i ? 2 : 0}
+              style={{ transition: "r 0.12s" }}
+            />
+            <text
+              x={getX(i)}
+              y={height - 6}
+              textAnchor="middle"
+              fill="#666"
+              fontSize="8"
+              fontFamily="Inter, system-ui, sans-serif"
+            >
+              {p.year?.replace("20", "'") || ""}
+            </text>
+          </g>
+        ))}
+
+        {/* Hover crosshair + label */}
+        {hover != null && validPts[hover] && (
+          <g>
+            <line
+              x1={getX(hover)}
+              y1={padTop}
+              x2={getX(hover)}
+              y2={padTop + chartH}
+              stroke="rgba(255,255,255,0.15)"
+              strokeDasharray="3,2"
+            />
+            <rect
+              x={getX(hover) - 28}
+              y={getY(validPts[hover].value) - 18}
+              width={56}
+              height={16}
+              rx={4}
+              fill="rgba(11,11,15,0.85)"
+              stroke="rgba(255,255,255,0.08)"
+              strokeWidth={0.5}
+            />
+            <text
+              x={getX(hover)}
+              y={getY(validPts[hover].value) - 8}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fill={color}
+              fontSize="9"
+              fontWeight="700"
+              fontFamily="Inter, system-ui, sans-serif"
+            >
+              {validPts[hover].value}
+              {unit}
+            </text>
+          </g>
         )}
-      </div>
+      </svg>
     </div>
   );
 }

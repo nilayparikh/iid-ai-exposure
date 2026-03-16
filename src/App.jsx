@@ -5,16 +5,13 @@ import Layout from "./components/Layout";
 import Sidebar from "./components/Sidebar";
 import HomePage from "./components/HomePage";
 import TreemapCanvas from "./components/TreemapCanvas";
-import TrendPanel from "./components/TrendPanel";
 import IndustryBar from "./components/IndustryBar";
 import OccupationRing from "./components/OccupationRing";
-import StatePanel from "./components/StatePanel";
 import AssessmentPanel from "./components/AssessmentPanel";
-import DemographicsPanel from "./components/DemographicsPanel";
+import StatesPage from "./components/StatesPage";
+import WorkforcePage from "./components/WorkforcePage";
 import WagesPanel from "./components/WagesPanel";
-import EmploymentPanel from "./components/EmploymentPanel";
-import StateVulnerabilityPage from "./components/StateVulnerabilityPage";
-import VulnerabilityMatrixPage from "./components/VulnerabilityMatrixPage";
+import MethodologyPage from "./components/MethodologyPage";
 import TermsPage from "./components/TermsPage";
 import PrivacyPage from "./components/PrivacyPage";
 import GlossaryPage from "./components/GlossaryPage";
@@ -73,16 +70,8 @@ function DashboardLayout({
               />
             }
           />
-          <Route path="/trends" element={<TrendPanel data={data} />} />
           <Route
-            path="/demographics"
-            element={<DemographicsPanel data={data} />}
-          />
-          <Route path="/states" element={<StatePanel data={data} />} />
-          <Route path="/employment" element={<EmploymentPanel data={data} />} />
-          <Route path="/wages" element={<WagesPanel data={data} />} />
-          <Route
-            path="/assessment"
+            path="/industries"
             element={
               <AssessmentPanel
                 data={data}
@@ -92,17 +81,14 @@ function DashboardLayout({
             }
           />
           <Route
-            path="/state-vulnerability"
-            element={
-              <StateVulnerabilityPage
-                stateAI={stateAI}
-                industries={data.industries}
-              />
-            }
+            path="/states"
+            element={<StatesPage data={data} stateAI={stateAI} />}
           />
+          <Route path="/workforce" element={<WorkforcePage data={data} />} />
+          <Route path="/wages" element={<WagesPanel data={data} />} />
           <Route
-            path="/vulnerability-matrix"
-            element={<VulnerabilityMatrixPage stateAI={stateAI} />}
+            path="/methodology"
+            element={<MethodologyPage data={data} />}
           />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

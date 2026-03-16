@@ -2,16 +2,13 @@ import { NavLink } from "react-router-dom";
 import { AppLayout } from "@iid/common";
 
 const NAV_ITEMS = [
-  { to: "/", label: "Home", icon: "🏠", end: true },
-  { to: "/treemap", label: "Treemap", icon: "▦" },
-  { to: "/assessment", label: "AI Exposure", icon: "🤖" },
-  { to: "/state-vulnerability", label: "State AI", icon: "🗺" },
-  { to: "/vulnerability-matrix", label: "Risk Matrix", icon: "⚠" },
-  { to: "/trends", label: "Trends", icon: "📈" },
-  { to: "/demographics", label: "Demographics", icon: "👥" },
-  { to: "/states", label: "States", icon: "📊" },
-  { to: "/employment", label: "Employment", icon: "💼" },
+  { to: "/", label: "Overview", icon: "🏠", end: true },
+  { to: "/treemap", label: "Exposure Map", icon: "▦" },
+  { to: "/industries", label: "Industry Scores", icon: "🏭" },
+  { to: "/states", label: "State Risk", icon: "🗺" },
+  { to: "/workforce", label: "AI Dimensions", icon: "📈" },
   { to: "/wages", label: "Wages", icon: "₹" },
+  { to: "/methodology", label: "Methodology", icon: "📐" },
 ];
 
 function NavTabs() {
